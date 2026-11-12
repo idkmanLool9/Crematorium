@@ -1,0 +1,17 @@
+{
+  "name": "Uitvaartondernemingen in Duitsland",
+  "short_name": "Duitsland",
+  "description": "Alle Duitse uitvaartondernemingen binnen 400 km van de Nederlandse grens, in vijf zones.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fcfcfb",
+  "theme_color": "#fcfcfb",
+  "lang": "nl",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
