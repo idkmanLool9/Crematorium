@@ -666,12 +666,20 @@ const datNL=s=>{const[a,b,c]=s.split('-');return c+'-'+b+'-'+a};
 document.getElementById('nbexp').onclick=()=>{
   const schoon={}; Object.entries(NB).forEach(([k,v])=>{ if(v.notitie.trim()||v.log.length) schoon[k]=v });
   const naam={}; R.forEach(r=>{ if(schoon[r[18]]) naam[r[18]]=r[0]||'' });
-  const blob=new Blob([JSON.stringify({versie:1, opgeslagen:new Date().toISOString(), namen:naam, data:schoon},null,1)],
-                      {type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob); a.download='aantekeningen-'+vandaag()+'.json';
-  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  const tekst=JSON.stringify({versie:1, opgeslagen:new Date().toISOString(), namen:naam, data:schoon},null,1);
+  const bestand='aantekeningen-'+vandaag()+'.json';
+  bewaarAls(bestand, tekst);
 };
+async function bewaarAls(bestand, tekst){
+  try{
+    const dl = (window.claude && claude.use) ? await claude.use('downloads') : null;
+    if(dl){ await dl.save({filename:bestand, data:tekst}); return }
+  }catch(e){}
+  const blob=new Blob([tekst],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=bestand;
+  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
 document.getElementById('nbimp').onchange=async e=>{
   const f=e.target.files[0]; if(!f) return;
   try{
