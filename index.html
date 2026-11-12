@@ -295,7 +295,7 @@ const dots=R.map((r,i)=>{
 const oznG=mk('g',{});
 const hiG=mk('g',{'pointer-events':'none'});
 
-let dotR=[], hov=-1, kz=1;
+let dotR=[], hov=-1, vast=-1, kz=1;
 function paintDots(){
   const k=V.w/D.w;
   kz=Math.min(2.4,Math.pow(D.w/V.w,0.38));
@@ -316,7 +316,9 @@ function paintDots(){
     fr[z].appendChild(c);
   });
   [5,4,3,0,2,1].forEach(z=>gz[z].appendChild(fr[z]));
-  if(hov>=0&&!hidden[R[hov][13]]) markeer(hov); else {hov=-1; hiG.textContent=''}
+  if(vast>=0&&hidden[R[vast][13]]) {vast=-1; tip.style.opacity=0}
+  if(hov>=0&&!hidden[R[hov][13]]) markeer(hov); else if(vast>=0) markeer(vast); else {hov=-1; hiG.textContent=''}
+  if(hov<0&&vast>=0) toon(vast);
   oznG.textContent='';
   const [ox,oy]=D.ozn_hoofd;
   mk('circle',{cx:ox,cy:oy,r:9*k,fill:'var(--z1)','fill-opacity':.16},oznG);
@@ -344,7 +346,7 @@ function startKnijp(){
   const b=map.getBoundingClientRect(), m=mid();
   knijp={d0:Math.max(m.d,1), w0:V.w, h0:V.h,
          ax:V.x+(m.x-b.left)/b.width*V.w, ay:V.y+(m.y-b.top)/b.height*V.h};
-  drag=null; map.classList.add('drag'); wis();
+  drag=null; map.classList.add('drag'); hov=-1;
 }
 function startSleep(e){ drag={x:e.clientX,y:e.clientY,vx:V.x,vy:V.y,m:0}; map.classList.add('drag') }
 map.addEventListener('pointerdown',e=>{
@@ -367,6 +369,7 @@ map.addEventListener('pointermove',e=>{
   const dx=(e.clientX-drag.x)/b.width*V.w, dy=(e.clientY-drag.y)/b.height*V.h;
   drag.m=Math.max(drag.m,Math.abs(dx)+Math.abs(dy));
   V.x=drag.vx-dx; V.y=drag.vy-dy; clamp(); map.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${V.h}`);
+  if(vast>=0) toon(vast);
 });
 const end=e=>{
   ptrs.delete(e.pointerId);
@@ -410,7 +413,9 @@ function toon(i){
   const rpx=(dotR[i]||3)/V.w*b.width;
   tip.style.left=(sx-mb.left)+'px'; tip.style.top=(sy-rpx-mb.top)+'px'; tip.style.opacity=1;
 }
-function wis(){ hov=-1; hiG.textContent=''; tip.style.opacity=0; map.classList.remove('aan') }
+function wis(){ hov=-1; map.classList.remove('aan');
+  if(vast>=0){ markeer(vast); toon(vast); return }
+  hiG.textContent=''; tip.style.opacity=0 }
 map.addEventListener('mousemove',e=>{
   if(drag){wis();return}
   const i=dichtstbij(e);
@@ -422,7 +427,9 @@ map.addEventListener('mousemove',e=>{
 map.addEventListener('mouseleave',wis);
 map.addEventListener('click',e=>{
   if(drag&&drag.m>4) return;
-  const i=dichtstbij(e); if(i>=0) select(i);
+  const i=dichtstbij(e);
+  if(i<0){ vast=-1; hov=-1; hiG.textContent=''; tip.style.opacity=0; return }
+  vast=i; hov=i; markeer(i); toon(i); select(i);
 });
 
 /* ---------------- legenda ---------------- */
@@ -440,7 +447,7 @@ const rij=(z,titel,sub)=>{
 B.forEach(([lo,hi],i)=>rij(i+1,`Zone ${i+1}`,`${lo}–${hi} km · ${nf(tel[i+1])}`));
 rij(0,'Buiten bereik',`&gt; 400 km · ${nf(tel[0])}`);
 legend.insertAdjacentHTML('beforeend',
-  '<p class="sidehint">Klik een zone om hem te tonen of te verbergen. Sleep de kaart om te verschuiven, scroll om te zoomen. Zweef over de kaart: de dichtstbijzijnde onderneming licht op.</p>');
+  '<p class="sidehint">Klik een zone om hem te tonen of te verbergen. Sleep om te verschuiven, scroll of knijp om te zoomen. Zweef met de muis of tik op de kaart: de dichtstbijzijnde onderneming licht op.</p>');
 
 document.getElementById('nstrook').textContent=nf(R.filter(r=>r[9]<=50&&r[13]>0).length);
 const binnen=tel.slice(1).reduce((a,b)=>a+b,0);
