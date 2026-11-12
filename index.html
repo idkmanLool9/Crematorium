@@ -88,9 +88,19 @@ svg.map.drag{cursor:grabbing}
 .chip{flex:0 0 auto;width:24px;height:16px;border-radius:4px;position:relative;border:1px solid rgba(0,0,0,.14)}
 .chip i{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;
   box-shadow:0 0 0 1px var(--ring)}
-.lgtxt{flex:1;min-width:0;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.lgtxt{flex:1;min-width:0;display:grid;grid-template-columns:1fr auto;gap:1px 10px;align-items:baseline}
 .lgtxt b{font-size:13px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
-.lgtxt span{font-size:12px;color:var(--tx2);font-variant-numeric:tabular-nums}
+.lgtxt em{font-style:normal;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.lgtxt span{font-size:11.5px;color:var(--tx3);font-variant-numeric:tabular-nums}
+.lgkop{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:0 8px 7px;
+  font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3)}
+.markt{margin-top:10px;padding:12px 8px 2px;border-top:1px solid var(--line2)}
+.markt h4{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3);margin-bottom:2px}
+.markt .wie{font-size:13px;font-weight:600;letter-spacing:-.01em;margin-bottom:9px}
+.markt dl{display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:12.5px}
+.markt dt{color:var(--tx2)}
+.markt dd{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.markt dd.dim{font-weight:400;color:var(--tx2)}
 .gb{padding:0 8px 12px;margin-bottom:10px;border-bottom:1px solid var(--line2);display:grid;gap:10px}
 .gb .r{display:flex;align-items:flex-start;gap:10px}
 .gb .sw{flex:0 0 auto;width:24px;height:16px;border-radius:4px;margin-top:1px}
@@ -203,7 +213,7 @@ table.zt td:last-child,table.zt th:last-child{text-align:right;font-variant-nume
   <div class="stats">
     <div class="stat"><b id="s1">0</b><span>Binnen 400 km van de grens</span></div>
     <div class="stat"><b id="s2">0</b><span>Zone 1 &mdash; de eerste 80 km</span></div>
-    <div class="stat"><b id="s3">0</b><span>Gemiddeld vanaf OZN</span></div>
+    <div class="stat"><b id="s4">0</b><span>Crematies per jaar binnen 400 km</span></div>
   </div>
 </header>
 
@@ -222,7 +232,7 @@ table.zt td:last-child,table.zt th:last-child{text-align:right;font-variant-nume
           </div>
           <div class="gb">
             <div class="r"><span class="sw ln"></span><div><b>Landsgrens NL&ndash;DE</b><span>De lijn waar de overdracht plaatsvindt. Alle afstanden worden hiervandaan gemeten.</span></div></div>
-            <div class="r"><span class="sw ht"></span><div><b>Grensstrook 0&ndash;50 km</b><span>Het kerngebied: <i id="nstrook">&mdash;</i> ondernemingen. Geen zone &mdash; ligt binnen zone 1.</span></div></div>
+            <div class="r"><span class="sw ht"></span><div><b>Grensstrook 0&ndash;50 km</b><span>Het kerngebied: <i id="nstrook">&mdash;</i> ondernemingen, <i id="cstrook">&mdash;</i> crematies p.j. Geen zone &mdash; ligt binnen zone 1.</span></div></div>
           </div>
         </div>
         <div class="zoombar">
@@ -234,18 +244,6 @@ table.zt td:last-child,table.zt th:last-child{text-align:right;font-variant-nume
     </div>
   </div>
   <div id="detail"></div>
-</section>
-
-<section>
-  <div class="h2">Marktomvang</div>
-  <div class="marktkop">
-    <p>Hoeveel mensen wonen er in elke zone, hoeveel overlijden er per jaar, en hoeveel daarvan worden gecremeerd. De eerste twee kolommen zijn officiële cijfers; de crematies zijn een berekening. Wat daarvan voor jullie bereikbaar is, staat er bewust niet bij &mdash; dat cijfer bestaat nog niet.</p>
-  </div>
-  <table class="mt" id="mtab">
-    <thead><tr><th>Zone</th><th>Afstand</th><th>Inwoners</th><th>Overledenen p.j.</th><th>Crematies p.j.</th><th>Ondernemingen</th><th>Crematies per onderneming</th></tr></thead>
-    <tbody></tbody>
-  </table>
-  <div class="formule" id="formule"></div>
 </section>
 
 <section>
@@ -272,6 +270,11 @@ table.zt td:last-child,table.zt th:last-child{text-align:right;font-variant-nume
       <p>Elke zone is 80&nbsp;km breed, gemeten vanaf de dichtstbijzijnde punt van de Nederlands-Duitse landsgrens. Donker is dichtbij, licht is ver. Omdat de kleuren oplopen in helderheid blijven ze ook in zwart-wit en voor kleurenblinde lezers uit elkaar te houden.</p>
       <table class="zt" id="ztab"><thead><tr><th>Zone</th><th>Afstand tot de grens</th><th>Bedrijven</th></tr></thead><tbody></tbody></table>
     </div>
+    <div class="note"><h3>Hoe de marktcijfers zijn berekend</h3>
+      <p>Per deelstaat zijn de offici&euml;le cijfers over 2025 verdeeld over de zones naar bevolkingsaandeel van 10.786 gemeenten, en daarna vermenigvuldigd met het crematieaandeel van die deelstaat. De controle klopt: alles bij elkaar komt uit op 83.467.117 inwoners en 1.006.343 overledenen, precies de landelijke cijfers.</p>
+      <p>Wat er bewust niet staat: <em>overledenen &times; crematieaandeel</em> is pas de halve som. Welk deel via een partner binnenkomt en welk deel van de nabestaanden een crematie in Nederland accepteert, is nergens gepubliceerd. Die twee blijken pas uit de folderronde.</p>
+      <p>De kolom <em>per onderneming</em> valt te hoog uit, want OpenStreetMap kent niet elke uitvaartonderneming. Landelijk doet een onderneming ruwweg 180 uitvaarten per jaar; afgezet daartegen staan er in dit gebied naar schatting zo'n 1.300 niet op de kaart. En het crematiecijfer komt uit een enqu&ecirc;te onder begraafplaatsbeheerders met een respons van een derde, die as buiten de begraafplaats niet meetelt &mdash; het werkelijke aandeel ligt eerder iets hoger dan lager.</p>
+      <p><b>Bronnen.</b> Sterfte en bevolking: Statistische &Auml;mter des Bundes und der L&auml;nder, 2025 (voorlopig). Crematieaandeel: RAL-G&uuml;tegemeinschaft Feuerbestattungsanlagen, peiling 2025. Inwoners per gemeente: Zensus 2022. Vestigingen: OpenStreetMap.</p></div>
     <div class="note"><h3>Twee afstanden</h3>
       <p>De zone-indeling gaat over de afstand tot de <em>grens</em>, want een Duitse ondernemer brengt de overledene zelf over. De afstand <em>vanaf OZN</em> staat er apart bij, voor als jullie zelf rijden. Beide zijn hemelsbreed, geen rijafstand &mdash; reken op ruwweg een kwart meer over de weg.</p></div>
     <div class="note"><h3>Waar de gegevens vandaan komen</h3>
@@ -467,26 +470,128 @@ map.addEventListener('click',e=>{
 /* ---------------- legenda ---------------- */
 const tel=[0,0,0,0,0,0]; R.forEach(r=>tel[r[13]]++);
 const legend=document.getElementById('legend');
-const rij=(z,titel,sub)=>{
+const M={
+ "zones": [
+  {
+   "zone": 1,
+   "bereik": "0–80 km",
+   "inwoners": 15832624,
+   "overledenen": 193868,
+   "crematies": 148818,
+   "bedrijven": 790,
+   "per_bedrijf": 188
+  },
+  {
+   "zone": 2,
+   "bereik": "80–160 km",
+   "inwoners": 9160912,
+   "overledenen": 112798,
+   "crematies": 88779,
+   "bedrijven": 406,
+   "per_bedrijf": 219
+  },
+  {
+   "zone": 3,
+   "bereik": "160–240 km",
+   "inwoners": 17184489,
+   "overledenen": 206892,
+   "crematies": 169773,
+   "bedrijven": 850,
+   "per_bedrijf": 200
+  },
+  {
+   "zone": 4,
+   "bereik": "240–320 km",
+   "inwoners": 10294464,
+   "overledenen": 123997,
+   "crematies": 104088,
+   "bedrijven": 473,
+   "per_bedrijf": 220
+  },
+  {
+   "zone": 5,
+   "bereik": "320–400 km",
+   "inwoners": 11552633,
+   "overledenen": 141655,
+   "crematies": 120751,
+   "bedrijven": 512,
+   "per_bedrijf": 236
+  }
+ ],
+ "strook": {
+  "zone": "strook",
+  "bereik": "0–50 km",
+  "inwoners": 7919112,
+  "overledenen": 96914,
+  "crematies": 74318,
+  "bedrijven": 299,
+  "per_bedrijf": 249
+ },
+ "totaal": {
+  "zone": "totaal",
+  "bereik": "0–400 km",
+  "inwoners": 64025122,
+  "overledenen": 779210,
+  "crematies": 632209,
+  "bedrijven": 3031,
+  "per_bedrijf": 209
+ },
+ "duitsland": {
+  "inwoners": 83467117,
+  "overledenen": 1006343,
+  "crematies": 823612
+ },
+ "jaar_sterfte": 2025,
+ "jaar_crematie": 2025,
+ "jaar_bevolking": "Zensus 2022, geschaald naar 2025"
+};
+const MZ={}; M.zones.forEach(r=>MZ[r.zone]=r);
+legend.insertAdjacentHTML('beforeend','<div class="lgkop"><span>Zone</span><span>Crematies p.j.</span></div>');
+const rij=(z,titel,sub,waarde)=>{
   const b=document.createElement('button');
   b.className='lgbtn'; b.dataset.z=z; b.setAttribute('aria-pressed','true');
   b.innerHTML=`<span class="chip" style="background:${z?ZF(z):'var(--land)'}"><i style="background:${z?ZC(z):'var(--z0)'}"></i></span>`
-    +`<span class="lgtxt"><b>${titel}</b><span>${sub}</span></span>`;
+    +`<span class="lgtxt"><b>${titel}</b><em>${waarde}</em><span>${sub}</span></span>`;
   b.onclick=()=>{const on=b.getAttribute('aria-pressed')==='true';
-    b.setAttribute('aria-pressed',!on); hidden[z]=on; paintDots(); draw();};
+    b.setAttribute('aria-pressed',!on); hidden[z]=on; paintDots(); draw(); paneel();};
+  if(z) { b.onmouseenter=()=>paneel(z); b.onmouseleave=()=>paneel(); }
   legend.appendChild(b);
 };
-B.forEach(([lo,hi],i)=>rij(i+1,`Zone ${i+1}`,`${lo}–${hi} km · ${nf(tel[i+1])}`));
-rij(0,'Buiten bereik',`&gt; 400 km · ${nf(tel[0])}`);
+B.forEach(([lo,hi],i)=>rij(i+1,`Zone ${i+1}`,`${lo}–${hi} km · ${nf(tel[i+1])} bedrijven`,nf(MZ[i+1].crematies)));
+rij(0,'Buiten bereik','&gt; 400 km · '+nf(tel[0])+' bedrijven','&mdash;');
+
 legend.insertAdjacentHTML('beforeend',
-  '<p class="sidehint">Klik een zone om hem te tonen of te verbergen. Sleep om te verschuiven, scroll of knijp om te zoomen. Zweef met de muis of tik op de kaart: de dichtstbijzijnde onderneming licht op.</p>');
+  '<div class="markt"><h4>Marktomvang</h4><div class="wie" id="mwie"></div>'
+  +'<dl><dt>Inwoners</dt><dd id="m1"></dd>'
+  +'<dt>Overledenen p.j.</dt><dd id="m2"></dd>'
+  +'<dt>Crematies p.j.</dt><dd id="m3"></dd>'
+  +'<dt>Per onderneming</dt><dd class="dim" id="m4"></dd></dl></div>'
+  +'<p class="sidehint">Klik een zone om hem te tonen of te verbergen &mdash; de marktomvang telt mee wat zichtbaar is. Zweef over een zone voor die zone alleen. Sleep om te verschuiven, knijp of scroll om te zoomen. Tik op de kaart: de dichtstbijzijnde onderneming licht op.</p>');
+
+function paneel(alleen){
+  let r, wie;
+  if(alleen){ r=MZ[alleen]; wie='Zone '+alleen+' · '+r.bereik; }
+  else {
+    const z=[1,2,3,4,5].filter(k=>!hidden[k]);
+    r={inwoners:0,overledenen:0,crematies:0,bedrijven:0};
+    z.forEach(k=>{const m=MZ[k]; r.inwoners+=m.inwoners; r.overledenen+=m.overledenen;
+                   r.crematies+=m.crematies; r.bedrijven+=m.bedrijven;});
+    wie = z.length===5 ? 'Binnen 400 km van de grens'
+        : z.length===0 ? 'Geen zone zichtbaar'
+        : (z.length===1 ? 'Zone '+z[0] : 'Zones '+z.join(', '));
+  }
+  mwie.textContent=wie;
+  m1.textContent=nf(r.inwoners); m2.textContent=nf(r.overledenen); m3.textContent=nf(r.crematies);
+  m4.textContent=r.bedrijven? nf(Math.round(r.crematies/r.bedrijven))+' crematies' : '—';
+}
+paneel();
 
 document.getElementById('nstrook').textContent=nf(R.filter(r=>r[9]<=50&&r[13]>0).length);
+document.getElementById('cstrook').textContent=nf(M.strook.crematies);
 const binnen=tel.slice(1).reduce((a,b)=>a+b,0);
 s1.textContent=nf(binnen);
 s2.textContent=nf(tel[1]);
-const inR=R.filter(r=>r[13]>0);
-s3.textContent=Math.round(inR.reduce((a,r)=>a+r[10],0)/inR.length)+' km';
+s4.textContent=nf(M.totaal.crematies);
 const tb=document.querySelector('#ztab tbody');
 B.forEach(([lo,hi],i)=>{
   const tr=document.createElement('tr');
@@ -576,123 +681,6 @@ q.addEventListener('input',draw); bl.addEventListener('change',draw);
 hasc.addEventListener('change',draw); sort.addEventListener('change',draw);
 
 applyView(); draw();
-
-/* ---------------- marktomvang ---------------- */
-const M={
- "zones": [
-  {
-   "zone": 1,
-   "bereik": "0–80 km",
-   "inwoners": 15832624,
-   "overledenen": 193868,
-   "crematies": 148818,
-   "bedrijven": 790,
-   "per_bedrijf": 188
-  },
-  {
-   "zone": 2,
-   "bereik": "80–160 km",
-   "inwoners": 9160912,
-   "overledenen": 112798,
-   "crematies": 88779,
-   "bedrijven": 406,
-   "per_bedrijf": 219
-  },
-  {
-   "zone": 3,
-   "bereik": "160–240 km",
-   "inwoners": 17184489,
-   "overledenen": 206892,
-   "crematies": 169773,
-   "bedrijven": 850,
-   "per_bedrijf": 200
-  },
-  {
-   "zone": 4,
-   "bereik": "240–320 km",
-   "inwoners": 10294464,
-   "overledenen": 123997,
-   "crematies": 104088,
-   "bedrijven": 473,
-   "per_bedrijf": 220
-  },
-  {
-   "zone": 5,
-   "bereik": "320–400 km",
-   "inwoners": 11552633,
-   "overledenen": 141655,
-   "crematies": 120751,
-   "bedrijven": 512,
-   "per_bedrijf": 236
-  }
- ],
- "strook": {
-  "zone": "strook",
-  "bereik": "0–50 km",
-  "inwoners": 7919112,
-  "overledenen": 96914,
-  "crematies": 74318,
-  "bedrijven": 299,
-  "per_bedrijf": 249
- },
- "totaal": {
-  "zone": "totaal",
-  "bereik": "0–400 km",
-  "inwoners": 64025122,
-  "overledenen": 779210,
-  "crematies": 632208,
-  "bedrijven": 3031,
-  "per_bedrijf": 209
- },
- "duitsland": {
-  "inwoners": 83467117,
-  "overledenen": 1006343,
-  "crematies": 823612
- },
- "jaar_sterfte": 2025,
- "jaar_crematie": 2025,
- "jaar_bevolking": "Zensus 2022, geschaald naar 2025"
-};
-(function(){
-  const tb=document.querySelector('#mtab tbody');
-  const chip=z=>`<span class="zb"><i style="background:var(--z${z})"></i>Zone ${z}</span>`;
-  const rij=(r,cls,label)=>{
-    const tr=document.createElement('tr');
-    if(cls) tr.className=cls;
-    tr.innerHTML='<td>'+(label||chip(r.zone))+'</td>'
-      +'<td>'+r.bereik+'</td>'
-      +'<td>'+nf(r.inwoners)+'</td>'
-      +'<td>'+nf(r.overledenen)+'</td>'
-      +'<td><strong>'+nf(r.crematies)+'</strong></td>'
-      +'<td>'+nf(r.bedrijven)+'</td>'
-      +'<td>'+nf(r.per_bedrijf)+'</td>';
-    tb.appendChild(tr);
-  };
-  rij(M.strook,'strook','<span class="zb"><i style="background:var(--grens)"></i>Grensstrook<span class="sub">ligt binnen zone 1</span></span>');
-  M.zones.forEach(r=>rij(r));
-  rij(M.totaal,'tot','<span class="zb">Binnen 400 km</span>');
-
-  const dekking=Math.round(M.totaal.bedrijven/(M.totaal.overledenen/180)*100);
-  document.getElementById('formule').innerHTML =
-    '<b>Zo is het gerekend.</b> Per deelstaat zijn de officiële cijfers over 2025 verdeeld over de zones naar '
-    +'bevolkingsaandeel, en daarna opgeteld. De controle klopt: alles bij elkaar komt uit op '
-    +nf(M.duitsland.inwoners)+' inwoners en '+nf(M.duitsland.overledenen)+' overledenen &mdash; precies de landelijke cijfers van Destatis.'
-    +'<br><br><b>overledenen</b> &times; <b>crematie&shy;aandeel van de deelstaat</b> '
-    +'&times; <span class="on">aandeel dat via een partner binnenkomt</span> '
-    +'&times; <span class="on">aandeel dat crematie in Nederland accepteert</span>'
-    +'<br><br>De eerste twee factoren staan hierboven. De twee rode zijn nergens gepubliceerd en kunnen ook niet '
-    +'berekend worden &mdash; die blijken pas uit de folderronde en de telefoontjes erna. Daarom staat er bewust geen omzet in deze tabel.'
-    +'<br><br><b>Twee dingen om bij te onthouden.</b> De kolom <em>crematies per onderneming</em> is te hoog: '
-    +'OpenStreetMap kent niet elke uitvaartonderneming. Landelijk doet een onderneming ruwweg 180 uitvaarten per jaar; '
-    +'afgezet daartegen dekt deze lijst ongeveer '+dekking+'&nbsp;% van de markt, dus er zijn in dit gebied naar schatting '
-    +nf(Math.round(M.totaal.overledenen/180-M.totaal.bedrijven))+' ondernemingen die hier niet op staan. '
-    +'En het crematiecijfer komt uit een enquête onder begraafplaatsbeheerders met een respons van een derde, die as buiten de begraafplaats niet meetelt &mdash; '
-    +'het werkelijke aandeel ligt eerder iets hoger dan lager.'
-    +'<br><br><b>Bronnen.</b> Sterfte en bevolking: Statistische Ämter des Bundes und der Länder, 2025 (voorlopig). '
-    +'Crematieaandeel: RAL-Gütegemeinschaft Feuerbestattungsanlagen, peiling 2025. '
-    +'Inwoners per gemeente: Zensus 2022, geschaald naar de bevolkingsstand van eind 2025. '
-    +'Vestigingen: OpenStreetMap.';
-})();
 
 </script>
 <script>
