@@ -1,0 +1,143 @@
+{
+  "jaar_sterfte": 2025,
+  "jaar_bevolking": 2025,
+  "bronnen": [
+    {
+      "titel": "Statistische Ämter des Bundes und der Länder – Geborene und Gestorbene, Berichtsjahr 2025 (vorläufig)",
+      "url": "https://www.statistikportal.de/de/bevoelkerung/natuerliche-bevoelkerungsbewegung/geborene-und-gestorbene",
+      "wat": "sterfte"
+    },
+    {
+      "titel": "Amt für Statistik Berlin-Brandenburg – Geburten, Sterbefälle, Eheschließungen Berlin 2025 (controle Berlijn: 37.575)",
+      "url": "https://www.statistik-berlin-brandenburg.de/presse/2026/92-geburten-sterbefaelle-eheschliessungen-berlin-2025",
+      "wat": "sterfte"
+    },
+    {
+      "titel": "Amt für Statistik Berlin-Brandenburg – Geburtenrückgang führt zu viertem Sterbeüberschuss in Folge, Brandenburg 2025 (controle Brandenburg: 35.743)",
+      "url": "https://www.statistik-berlin-brandenburg.de/presse/2026/93-geburten-sterbefaelle-eheschliessungen-brandenburg-2025",
+      "wat": "sterfte"
+    },
+    {
+      "titel": "Statistisches Bundesamt – Pressemitteilung PD26_146_126: Zahl der Geburten sinkt im Jahr 2025 auf den niedrigsten Stand der Nachkriegszeit (landelijk ca. 1,01 mln sterfgevallen, alle cijfers 2025 voorlopig)",
+      "url": "https://www.destatis.de/DE/Presse/Pressemitteilungen/2026/04/PD26_146_126.html",
+      "wat": "sterfte"
+    },
+    {
+      "titel": "Statistische Ämter des Bundes und der Länder – Fläche und Bevölkerung nach Ländern, Bevölkerungsstand 2025",
+      "url": "https://www.statistikportal.de/de/bevoelkerung/flaeche-und-bevoelkerung",
+      "wat": "bevolking"
+    },
+    {
+      "titel": "Statistisches Bundesamt – Pressemitteilung PD26_203_124: Bevölkerung Deutschlands sinkt im Jahr 2025 um 0,1 % (83,5 mln eind 2025, -110.000)",
+      "url": "https://www.destatis.de/DE/Presse/Pressemitteilungen/2026/06/PD26_203_124.html",
+      "wat": "bevolking"
+    },
+    {
+      "titel": "vdek – Daten zum Gesundheitswesen: Bevölkerung nach Bundesländern 2025/12 (naar Destatis; onafhankelijke controle, klopt op duizend nauwkeurig)",
+      "url": "https://www.vdek.com/presse/daten/a_bevoelkerung.html",
+      "wat": "bevolking"
+    }
+  ],
+  "landen": [
+    {
+      "naam": "Baden-Württemberg",
+      "sterfte": 117525,
+      "inwoners": 11238761,
+      "sterftecijfer_per_1000": 10.5
+    },
+    {
+      "naam": "Bayern",
+      "sterfte": 144076,
+      "inwoners": 13245503,
+      "sterftecijfer_per_1000": 10.9
+    },
+    {
+      "naam": "Berlin",
+      "sterfte": 37575,
+      "inwoners": 3700577,
+      "sterftecijfer_per_1000": 10.2
+    },
+    {
+      "naam": "Brandenburg",
+      "sterfte": 35741,
+      "inwoners": 2551889,
+      "sterftecijfer_per_1000": 14.0
+    },
+    {
+      "naam": "Bremen",
+      "sterfte": 8287,
+      "inwoners": 706915,
+      "sterftecijfer_per_1000": 11.7
+    },
+    {
+      "naam": "Hamburg",
+      "sterfte": 18807,
+      "inwoners": 1869473,
+      "sterftecijfer_per_1000": 10.1
+    },
+    {
+      "naam": "Hessen",
+      "sterfte": 71085,
+      "inwoners": 6278594,
+      "sterftecijfer_per_1000": 11.3
+    },
+    {
+      "naam": "Mecklenburg-Vorpommern",
+      "sterfte": 23908,
+      "inwoners": 1573685,
+      "sterftecijfer_per_1000": 15.2
+    },
+    {
+      "naam": "Niedersachsen",
+      "sterfte": 102831,
+      "inwoners": 8000826,
+      "sterftecijfer_per_1000": 12.9
+    },
+    {
+      "naam": "Nordrhein-Westfalen",
+      "sterfte": 218459,
+      "inwoners": 17986214,
+      "sterftecijfer_per_1000": 12.1
+    },
+    {
+      "naam": "Rheinland-Pfalz",
+      "sterfte": 50864,
+      "inwoners": 4123022,
+      "sterftecijfer_per_1000": 12.3
+    },
+    {
+      "naam": "Saarland",
+      "sterfte": 14439,
+      "inwoners": 1007342,
+      "sterftecijfer_per_1000": 14.3
+    },
+    {
+      "naam": "Sachsen",
+      "sterfte": 57416,
+      "inwoners": 4026599,
+      "sterftecijfer_per_1000": 14.3
+    },
+    {
+      "naam": "Sachsen-Anhalt",
+      "sterfte": 34864,
+      "inwoners": 2120252,
+      "sterftecijfer_per_1000": 16.4
+    },
+    {
+      "naam": "Schleswig-Holstein",
+      "sterfte": 39288,
+      "inwoners": 2958519,
+      "sterftecijfer_per_1000": 13.3
+    },
+    {
+      "naam": "Thüringen",
+      "sterfte": 31178,
+      "inwoners": 2078946,
+      "sterftecijfer_per_1000": 15.0
+    }
+  ],
+  "totaal_sterfte": 1006343,
+  "totaal_inwoners": 83467117,
+  "sterftecijfer_per_1000_nl_totaal": 12.1,
+  "opmerkingen": "Sterftecijfers: verslagjaar 2025, VOORLOPIG. Op statistikportal.de zijn alle 16 landencijfers gemarkeerd met 'p' (vorläufige Zahl); Destatis meldt in PD26_146_126 dat alle resultaten voor 2025 voorlopig zijn en dat de definitieve gedetailleerde cijfers later volgen. Verwacht nog kleine neerwaartse/opwaartse bijstellingen per land (orde van grootte: enkele tientallen tot honderden). | Optelling: de 16 landencijfers sommeren tot 1.006.343. Dezelfde bron noemt voor Duitsland als geheel 1.006.588 (zonder 'p'), dus 245 meer (0,02%). Dat verschil zit in een andere peilmoment/vintage van het landelijke cijfer (en sterfgevallen die nog niet aan een land zijn toegewezen); het is niet mogelijk het exact toe te rekenen aan een land. Beide cijfers passen bij de 'circa 1,01 miljoen' uit het Destatis-persbericht. | Bevolking: Bevölkerungsfortschreibung op basis van Zensus 2022, peildatum 31.12.2025. Som = 83.467.117, wat exact aansluit op Destatis (83,5 mln eind 2025, -110.000 t.o.v. eind 2024) en op duizend nauwkeurig op de vdek-tabel 2025/12. | Let op het verschil in aard van de twee reeksen: sterfte is een stroomgrootheid over heel 2025, de bevolking een standcijfer per 31.12.2025. Omdat de bevolking in 2025 licht kromp, is de noemer iets lager dan de gemiddelde bevolking over het jaar; de sterftecijfers per 1.000 vallen daardoor marginaal hoger uit (ca. 0,1 promille) dan bij gebruik van de jaargemiddelde bevolking. | Controles op landniveau: Berlijn 37.575 identiek aan het persbericht van het Amt für Statistik Berlin-Brandenburg; Brandenburg 35.741p tegenover 35.743 in datzelfde persbericht (verschil 2, past bij de voorlopige status). Beide bevestigen dat de statistikportal-tabel de officieuze/officiele landencijfers weergeeft. | De hogere sterftecijfers per 1.000 in de oostelijke landen (Sachsen-Anhalt, Thüringen, Mecklenburg-Vorpommern, Sachsen, Brandenburg) en het Saarland zijn een leeftijdsopbouw-effect, geen verschil in gezondheid of sterftekans op gelijke leeftijd. Voor vergelijkingen tussen landen is een leeftijdsgestandaardiseerd cijfer nodig."
+}

@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f0f10" media="(prefers-color-scheme: dark)">
-<meta name="description" content="Alle Duitse uitvaartondernemingen binnen 400 km van de Nederlandse grens, in vijf zones.">
+<meta name="description" content="Alle Duitse uitvaartondernemingen binnen 400 km van de Nederlandse grens, in vijf zones, met marktomvang per zone.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
@@ -170,6 +170,26 @@ a{color:var(--acc)}
 table.zt{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
 table.zt th,table.zt td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line2)}
 table.zt th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);font-weight:600}
+.mt{width:100%;border-collapse:collapse;font-size:13.5px}
+.mt th{text-align:left;font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--tx3);padding:0 10px 9px;border-bottom:1px solid var(--line)}
+.mt td{padding:11px 10px;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums}
+.mt td:first-child,.mt th:first-child{padding-left:0}
+.mt td:last-child,.mt th:last-child{padding-right:0}
+.mt th:not(:first-child),.mt td:not(:first-child){text-align:right}
+.mt tr.strook td{background:color-mix(in srgb,var(--grens) 7%,transparent)}
+.mt tr.strook td:first-child{box-shadow:inset 3px 0 0 var(--grens)}
+.mt tr.tot td{border-bottom:none;border-top:1px solid var(--line);font-weight:600}
+.mt .zb{display:inline-flex;align-items:center;gap:8px}
+.mt .zb i{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.mt .sub{display:block;font-size:11px;color:var(--tx3);font-variant-numeric:normal}
+.marktkop{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;margin-bottom:14px}
+.marktkop p{font-size:13.5px;line-height:1.55;color:var(--tx2);max-width:62ch}
+.formule{margin-top:16px;padding:14px 16px;background:var(--bg2);border:1px solid var(--line2);
+  border-radius:12px;font-size:13px;line-height:1.7;color:var(--tx2)}
+.formule b{color:var(--tx)}
+.formule .on{color:var(--z1);font-weight:600}
+@media(max-width:700px){.mt{font-size:12.5px}.mt th:nth-child(2),.mt td:nth-child(2){display:none}}
 table.zt td:last-child,table.zt th:last-child{text-align:right;font-variant-numeric:tabular-nums}
 </style>
 </head>
@@ -177,7 +197,7 @@ table.zt td:last-child,table.zt th:last-child{text-align:right;font-variant-nume
 <div class="wrap">
 
 <header>
-  <div class="kicker">Marktverkenning &middot; bijgewerkt 11 november 2026</div>
+  <div class="kicker">Marktverkenning &middot; bijgewerkt 12 november 2026</div>
   <h1>Uitvaartondernemingen in Duitsland</h1>
   <p class="lede">Alle Duitse uitvaartondernemingen binnen 400&nbsp;km van de Nederlandse grens, verdeeld in vijf zones van 80&nbsp;km. Vertrekpunt is OZN in Oldenzaal, op de kaart gemarkeerd.</p>
   <div class="stats">
@@ -214,6 +234,18 @@ table.zt td:last-child,table.zt th:last-child{text-align:right;font-variant-nume
     </div>
   </div>
   <div id="detail"></div>
+</section>
+
+<section>
+  <div class="h2">Marktomvang</div>
+  <div class="marktkop">
+    <p>Hoeveel mensen wonen er in elke zone, hoeveel overlijden er per jaar, en hoeveel daarvan worden gecremeerd. De eerste twee kolommen zijn officiële cijfers; de crematies zijn een berekening. Wat daarvan voor jullie bereikbaar is, staat er bewust niet bij &mdash; dat cijfer bestaat nog niet.</p>
+  </div>
+  <table class="mt" id="mtab">
+    <thead><tr><th>Zone</th><th>Afstand</th><th>Inwoners</th><th>Overledenen p.j.</th><th>Crematies p.j.</th><th>Ondernemingen</th><th>Crematies per onderneming</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <div class="formule" id="formule"></div>
 </section>
 
 <section>
@@ -544,6 +576,123 @@ q.addEventListener('input',draw); bl.addEventListener('change',draw);
 hasc.addEventListener('change',draw); sort.addEventListener('change',draw);
 
 applyView(); draw();
+
+/* ---------------- marktomvang ---------------- */
+const M={
+ "zones": [
+  {
+   "zone": 1,
+   "bereik": "0–80 km",
+   "inwoners": 15832624,
+   "overledenen": 193868,
+   "crematies": 148818,
+   "bedrijven": 790,
+   "per_bedrijf": 188
+  },
+  {
+   "zone": 2,
+   "bereik": "80–160 km",
+   "inwoners": 9160912,
+   "overledenen": 112798,
+   "crematies": 88779,
+   "bedrijven": 406,
+   "per_bedrijf": 219
+  },
+  {
+   "zone": 3,
+   "bereik": "160–240 km",
+   "inwoners": 17184489,
+   "overledenen": 206892,
+   "crematies": 169773,
+   "bedrijven": 850,
+   "per_bedrijf": 200
+  },
+  {
+   "zone": 4,
+   "bereik": "240–320 km",
+   "inwoners": 10294464,
+   "overledenen": 123997,
+   "crematies": 104088,
+   "bedrijven": 473,
+   "per_bedrijf": 220
+  },
+  {
+   "zone": 5,
+   "bereik": "320–400 km",
+   "inwoners": 11552633,
+   "overledenen": 141655,
+   "crematies": 120751,
+   "bedrijven": 512,
+   "per_bedrijf": 236
+  }
+ ],
+ "strook": {
+  "zone": "strook",
+  "bereik": "0–50 km",
+  "inwoners": 7919112,
+  "overledenen": 96914,
+  "crematies": 74318,
+  "bedrijven": 299,
+  "per_bedrijf": 249
+ },
+ "totaal": {
+  "zone": "totaal",
+  "bereik": "0–400 km",
+  "inwoners": 64025122,
+  "overledenen": 779210,
+  "crematies": 632208,
+  "bedrijven": 3031,
+  "per_bedrijf": 209
+ },
+ "duitsland": {
+  "inwoners": 83467117,
+  "overledenen": 1006343,
+  "crematies": 823612
+ },
+ "jaar_sterfte": 2025,
+ "jaar_crematie": 2025,
+ "jaar_bevolking": "Zensus 2022, geschaald naar 2025"
+};
+(function(){
+  const tb=document.querySelector('#mtab tbody');
+  const chip=z=>`<span class="zb"><i style="background:var(--z${z})"></i>Zone ${z}</span>`;
+  const rij=(r,cls,label)=>{
+    const tr=document.createElement('tr');
+    if(cls) tr.className=cls;
+    tr.innerHTML='<td>'+(label||chip(r.zone))+'</td>'
+      +'<td>'+r.bereik+'</td>'
+      +'<td>'+nf(r.inwoners)+'</td>'
+      +'<td>'+nf(r.overledenen)+'</td>'
+      +'<td><strong>'+nf(r.crematies)+'</strong></td>'
+      +'<td>'+nf(r.bedrijven)+'</td>'
+      +'<td>'+nf(r.per_bedrijf)+'</td>';
+    tb.appendChild(tr);
+  };
+  rij(M.strook,'strook','<span class="zb"><i style="background:var(--grens)"></i>Grensstrook<span class="sub">ligt binnen zone 1</span></span>');
+  M.zones.forEach(r=>rij(r));
+  rij(M.totaal,'tot','<span class="zb">Binnen 400 km</span>');
+
+  const dekking=Math.round(M.totaal.bedrijven/(M.totaal.overledenen/180)*100);
+  document.getElementById('formule').innerHTML =
+    '<b>Zo is het gerekend.</b> Per deelstaat zijn de officiële cijfers over 2025 verdeeld over de zones naar '
+    +'bevolkingsaandeel, en daarna opgeteld. De controle klopt: alles bij elkaar komt uit op '
+    +nf(M.duitsland.inwoners)+' inwoners en '+nf(M.duitsland.overledenen)+' overledenen &mdash; precies de landelijke cijfers van Destatis.'
+    +'<br><br><b>overledenen</b> &times; <b>crematie&shy;aandeel van de deelstaat</b> '
+    +'&times; <span class="on">aandeel dat via een partner binnenkomt</span> '
+    +'&times; <span class="on">aandeel dat crematie in Nederland accepteert</span>'
+    +'<br><br>De eerste twee factoren staan hierboven. De twee rode zijn nergens gepubliceerd en kunnen ook niet '
+    +'berekend worden &mdash; die blijken pas uit de folderronde en de telefoontjes erna. Daarom staat er bewust geen omzet in deze tabel.'
+    +'<br><br><b>Twee dingen om bij te onthouden.</b> De kolom <em>crematies per onderneming</em> is te hoog: '
+    +'OpenStreetMap kent niet elke uitvaartonderneming. Landelijk doet een onderneming ruwweg 180 uitvaarten per jaar; '
+    +'afgezet daartegen dekt deze lijst ongeveer '+dekking+'&nbsp;% van de markt, dus er zijn in dit gebied naar schatting '
+    +nf(Math.round(M.totaal.overledenen/180-M.totaal.bedrijven))+' ondernemingen die hier niet op staan. '
+    +'En het crematiecijfer komt uit een enquête onder begraafplaatsbeheerders met een respons van een derde, die as buiten de begraafplaats niet meetelt &mdash; '
+    +'het werkelijke aandeel ligt eerder iets hoger dan lager.'
+    +'<br><br><b>Bronnen.</b> Sterfte en bevolking: Statistische Ämter des Bundes und der Länder, 2025 (voorlopig). '
+    +'Crematieaandeel: RAL-Gütegemeinschaft Feuerbestattungsanlagen, peiling 2025. '
+    +'Inwoners per gemeente: Zensus 2022, geschaald naar de bevolkingsstand van eind 2025. '
+    +'Vestigingen: OpenStreetMap.';
+})();
 
 </script>
 <script>

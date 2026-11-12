@@ -1,0 +1,75 @@
+{
+ "zones": [
+  {
+   "zone": 1,
+   "bereik": "0–80 km",
+   "inwoners": 15832624,
+   "overledenen": 193868,
+   "crematies": 148818,
+   "bedrijven": 790,
+   "per_bedrijf": 188
+  },
+  {
+   "zone": 2,
+   "bereik": "80–160 km",
+   "inwoners": 9160912,
+   "overledenen": 112798,
+   "crematies": 88779,
+   "bedrijven": 406,
+   "per_bedrijf": 219
+  },
+  {
+   "zone": 3,
+   "bereik": "160–240 km",
+   "inwoners": 17184489,
+   "overledenen": 206892,
+   "crematies": 169773,
+   "bedrijven": 850,
+   "per_bedrijf": 200
+  },
+  {
+   "zone": 4,
+   "bereik": "240–320 km",
+   "inwoners": 10294464,
+   "overledenen": 123997,
+   "crematies": 104088,
+   "bedrijven": 473,
+   "per_bedrijf": 220
+  },
+  {
+   "zone": 5,
+   "bereik": "320–400 km",
+   "inwoners": 11552633,
+   "overledenen": 141655,
+   "crematies": 120751,
+   "bedrijven": 512,
+   "per_bedrijf": 236
+  }
+ ],
+ "strook": {
+  "zone": "strook",
+  "bereik": "0–50 km",
+  "inwoners": 7919112,
+  "overledenen": 96914,
+  "crematies": 74318,
+  "bedrijven": 299,
+  "per_bedrijf": 249
+ },
+ "totaal": {
+  "zone": "totaal",
+  "bereik": "0–400 km",
+  "inwoners": 64025122,
+  "overledenen": 779210,
+  "crematies": 632208,
+  "bedrijven": 3031,
+  "per_bedrijf": 209
+ },
+ "duitsland": {
+  "inwoners": 83467117,
+  "overledenen": 1006343,
+  "crematies": 823612
+ },
+ "jaar_sterfte": 2025,
+ "jaar_crematie": 2025,
+ "jaar_bevolking": "Zensus 2022, geschaald naar 2025"
+}

@@ -1,0 +1,41 @@
+{
+  "jaar": 2025,
+  "landelijk_pct": 81,
+  "methode": "De cijfers komen uit de jaarlijkse enquête van de RAL-Gütegemeinschaft Feuerbestattungsanlagen e.V. onder Duitse begraafplaatsbeheerders (Friedhofsverwaltungen). Het Statistisches Bundesamt registreert de bijzettingsvorm al jaren niet meer, waardoor deze enquête de enige doorlopende bron is. Voor het jaar 2025 reageerden 1.358 van de 4.135 aangeschreven begraafplaatsbeheerders, een respons van 33%; de uitkomst is dus een schatting op basis van een deelrespons en geen volkstelling. Er wordt feitelijk het aandeel urnenbijzettingen op begraafplaatsen geteld, wat het crematieaandeel benadert maar niet gelijk is: as die buiten een begraafplaats blijft (zeebijzetting, bos buiten de reguliere begraafplaats, verstrooiing of overbrenging naar het buitenland) valt grotendeels buiten de telling. Berlijn en Hamburg leverden voor 2024 en 2025 geen nieuwe opgave, daar staan nog de cijfers van 2023; voor Bremen is alleen Bremerhaven opgegeven, zodat die waarde niet representatief is voor het hele Land. Jaar-op-jaar schommelingen per Bundesland van enkele procentpunten (bijv. Sachsen 94% in 2023, 91% in 2024, 94% in 2025) komen vooral door wisselende respons en niet door werkelijke gedragsverandering. Andere bronnen noemen sterk afwijkende landelijke percentages, van circa 58% tot 81%, afhankelijk van definitie (crematies in crematoria versus urnenbijzettingen op begraafplaatsen), peiljaar en of ook in Duitsland gecremeerde buitenlandse overledenen worden meegerekend. Behandel deze cijfers daarom als richtinggevende orde van grootte met een onzekerheid van zeker enkele procentpunten per Land.",
+  "bronnen": [
+    {
+      "titel": "GFB-Umfrageergebnisse 2025 (Umfrage zu Sarg- und Urnenbestattungen, per Bundesland) - RAL-Gütegemeinschaft Feuerbestattungsanlagen e.V., gepubliceerd mei 2026",
+      "url": "https://feuerbestattungsanlagen-ral.de/wp-content/uploads/2026/07/GFB-umfrageergebnisse-2025.pdf"
+    },
+    {
+      "titel": "Umfrage zu Sarg- und Urnenbestattungen in Deutschland - Aktuelles, Gütegemeinschaft Feuerbestattungsanlagen e.V.",
+      "url": "https://feuerbestattungsanlagen-ral.de/aktuelles/"
+    },
+    {
+      "titel": "BDB x ADELTA Bestattungsreport (landelijk ca. 81% in 2024, o.b.v. RAL-GFB 2025 en Fischer, Handbuch des Feuerbestattungswesens)",
+      "url": "https://adeltafinanz.com/assets//ba467e63-1916-49a2-a62d-22129dd6748b/BDBxADELTA_Bestattungsreport_online%20(2).pdf"
+    },
+    {
+      "titel": "Urnenbestattungen erreichen 80 Prozent - Landesverband der Bestatter im Saarland (toelichting op de GFB-enquêtemethode)",
+      "url": "https://www.bestatter.saarland/news-artikel?tx_news_pi1%5Baction%5D=detail&tx_news_pi1%5Bcontroller%5D=News&tx_news_pi1%5Bnews%5D=1042&cHash=4fb8707447e3c8649dab5f9bfd3316e4"
+    }
+  ],
+  "landen": [
+    {"naam": "Baden-Württemberg", "crematie_pct": 78},
+    {"naam": "Bayern", "crematie_pct": 78},
+    {"naam": "Berlin", "crematie_pct": 84, "jaar": 2023, "opmerking": "Geen nieuwe opgave voor 2024/2025; cijfer van 2023 overgenomen in de GFB-tabel."},
+    {"naam": "Brandenburg", "crematie_pct": 92},
+    {"naam": "Bremen", "crematie_pct": 77, "opmerking": "Alleen Bremerhaven opgegeven; niet representatief voor het hele Land."},
+    {"naam": "Hamburg", "crematie_pct": 81, "jaar": 2023, "opmerking": "Geen nieuwe opgave voor 2024/2025; cijfer van 2023 overgenomen in de GFB-tabel."},
+    {"naam": "Hessen", "crematie_pct": 82},
+    {"naam": "Mecklenburg-Vorpommern", "crematie_pct": 93},
+    {"naam": "Niedersachsen", "crematie_pct": 81},
+    {"naam": "Nordrhein-Westfalen", "crematie_pct": 76},
+    {"naam": "Rheinland-Pfalz", "crematie_pct": 82},
+    {"naam": "Saarland", "crematie_pct": 85},
+    {"naam": "Sachsen", "crematie_pct": 94},
+    {"naam": "Sachsen-Anhalt", "crematie_pct": 94},
+    {"naam": "Schleswig-Holstein", "crematie_pct": 84},
+    {"naam": "Thüringen", "crematie_pct": 96}
+  ]
+}
