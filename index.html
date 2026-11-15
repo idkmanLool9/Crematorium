@@ -21,7 +21,7 @@
   --tx:#1d1d1f; --tx2:#6b6966; --tx3:#8a8884;
   --line:#d6d3cd; --line2:#e9e6e1;
   --acc:#9c3a24;
-  --land:#edebe7; --land-nl:#e3e0da; --sea:#fcfcfb;
+  --land:#edebe7; --land-nl:#e3e0da; --sea:#fcfcfb; --kaartvel:#fbf8f4;
   --z1:#7F1D1D; --z2:#B33025; --z3:#D9682B; --z4:#E9A94E; --z5:#F3D79A; --z0:#B5B2AC;
   --grens:#15485F;
   --f1:rgba(127,29,29,.22); --f2:rgba(179,48,37,.20); --f3:rgba(217,104,43,.18);
@@ -33,7 +33,7 @@
     --tx:#f5f1e8; --tx2:#9a9793; --tx3:#75736f;
     --line:#2e2c2a; --line2:#1f1e1d;
     --acc:#e0784f;
-    --land:#1b1a19; --land-nl:#232120; --sea:#0f0f10;
+    --land:#1b1a19; --land-nl:#232120; --sea:#0f0f10; --kaartvel:#141312;
     --z1:#C23B2E; --z2:#D9682B; --z3:#E9A94E; --z4:#F0CB85; --z5:#F5E3BE; --z0:#6b6865;
     --grens:#79B6CE;
     --f1:rgba(194,59,46,.26); --f2:rgba(217,104,43,.22); --f3:rgba(233,169,78,.20);
@@ -387,7 +387,7 @@ function tekenSteden(k){
   const pad=V.w*0.02;
   const x0=V.x-pad, x1=V.x+V.w+pad, y0=V.y-pad, y1=V.y+V.h+pad;
   const diep=D.w/V.w;
-  const fs=11.5*k, hoog=fs*2.1;
+  const fs=12.5*k, hoog=fs*2.1;
   const MAX=Math.min(95, Math.round(17*Math.pow(diep,0.58)));
   const vak=[];
   let gezet=0;
@@ -402,10 +402,10 @@ function tekenSteden(k){
     }
     if(bots) continue;
     vak.push([l,t,r,b]); gezet++;
-    mk('circle',{cx:x,cy:y,r:2.2*k,fill:'var(--tx2)','fill-opacity':.45},stadG);
-    const el=mk('text',{x:x,y:y-6*k,'text-anchor':'middle','font-size':fs,'font-weight':500,
-      fill:'var(--tx2)','font-family':'inherit',stroke:'var(--sea)','stroke-width':3.2*k,
-      'paint-order':'stroke','stroke-linejoin':'round','fill-opacity':.92},stadG);
+    mk('circle',{cx:x,cy:y,r:2.4*k,fill:'var(--tx)','fill-opacity':.55},stadG);
+    const el=mk('text',{x:x,y:y-6.5*k,'text-anchor':'middle','font-size':fs,'font-weight':600,
+      fill:'var(--tx)','font-family':'inherit',stroke:'var(--kaartvel)','stroke-width':4.4*k,
+      'paint-order':'stroke','stroke-linejoin':'round','stroke-opacity':.92},stadG);
     el.textContent=naam;
   }
 }
@@ -861,7 +861,7 @@ function rowHTML(i){
   cta.push('<a class="nav" href="'+route(r)+'" target="_blank" rel="noopener">'+PIN+'Route</a>');
   return '<div class="row" data-i="'+i+'">'
     +'<div class="zbar" style="background:'+(z?ZC(z):'var(--z0)')+'"></div>'
-    +'<div class="km">'+r[10].toFixed(0)+' km<i>grens '+r[9].toFixed(0)+'</i></div>'
+    +'<div class="km">\u00b1'+rij_km(r[10])+' km<i>'+r[9].toFixed(0)+' km grens</i></div>'
     +'<div><div class="nm'+(r[0]?'':' none')+'">'+esc(r[0]||'Naam niet bekend')
       +(heeft(r[18])?'<span class="merk" title="Heeft aantekeningen"></span>':'')+'</div>'
     +(addr?'<div class="ad">'+addr+'</div>':'<div class="ad" style="color:var(--tx3)">Alleen coördinaten bekend</div>')+'</div>'
