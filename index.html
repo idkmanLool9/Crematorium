@@ -71,6 +71,25 @@ section{padding:50px 0 0}
 @media(max-width:900px){.maprow{grid-template-columns:1fr}}
 .mapbox{position:relative;background:var(--sea);overflow:hidden}
 #namen{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+#vol{position:absolute;top:12px;right:12px;z-index:6;display:inline-flex;align-items:center;gap:7px;
+  font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--tx2);
+  background:color-mix(in srgb, var(--card) 88%, transparent);backdrop-filter:blur(8px);
+  border:1px solid var(--line);border-radius:9px;padding:7px 11px;line-height:1;
+  box-shadow:0 2px 8px rgba(0,0,0,.07)}
+#vol:hover{color:var(--tx);border-color:var(--tx3)}
+#vol .in{display:none}
+body.vol #vol .in{display:block}
+body.vol #vol .uit{display:none}
+@media(max-width:560px){#vol span{display:none}#vol{padding:8px}}
+
+/* Volledig scherm: de kaart vult het venster, de pagina scrollt niet mee. */
+body.vol{overflow:hidden}
+body.vol .mapcard{position:fixed;inset:0;z-index:60;margin:0;border-radius:0;border:0;height:100%}
+body.vol .maprow{height:100%}
+body.vol .side{overflow:auto}
+body.vol .mapbox{height:100%}
+body.vol svg.map{height:100%;width:100%}
+@media(max-width:900px){body.vol .side{display:none}}
 #namen b{position:absolute;font-size:13px;font-weight:600;letter-spacing:-.01em;line-height:1;
   color:var(--tx);white-space:nowrap;transform:translate(-50%,-100%);
   text-shadow:0 0 3px var(--kaartvel),0 0 3px var(--kaartvel),0 0 3px var(--kaartvel),
@@ -265,6 +284,10 @@ table.zt td:last-child,table.zt th:last-child{text-align:right;font-variant-nume
     <div class="maprow">
       <div class="mapbox">
         <svg class="map" id="map" aria-label="Kaart van Duitsland met uitvaartondernemingen in vijf afstandszones"></svg>
+        <button id="vol" type="button" aria-pressed="false" title="Volledig scherm">
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path class="uit" d="M2 6V2.6A.6.6 0 0 1 2.6 2H6M10 2h3.4a.6.6 0 0 1 .6.6V6M14 10v3.4a.6.6 0 0 1-.6.6H10M6 14H2.6a.6.6 0 0 1-.6-.6V10"/><path class="in" d="M6 2v3.4a.6.6 0 0 1-.6.6H2M14 6h-3.4a.6.6 0 0 1-.6-.6V2M10 14v-3.4a.6.6 0 0 1 .6-.6H14M2 10h3.4a.6.6 0 0 1 .6.6V14"/></g></svg>
+          <span>Volledig scherm</span>
+        </button>
         <div id="namen"></div>
         <div id="tip"></div>
         <div id="detail"></div>
@@ -998,6 +1021,65 @@ hasc.addEventListener('change',draw); sort.addEventListener('change',draw);
 
 applyView(); draw();
 telMerk();
+
+/* ---------------- volledig scherm ---------------- */
+/* De kaart vult het venster. De verhouding van het beeldvenster wordt
+   meegetrokken met die van het vak, anders klopt de plaatsing van de
+   plaatsnamen niet meer en komen er lege randen. */
+function pasVerhoudingAan(){
+  const bb=map.getBoundingClientRect();
+  if(!bb.width||!bb.height) return;
+  const wil=bb.height/bb.width, nu=V.h/V.w;
+  if(Math.abs(wil-nu)<0.001) return;
+  const mx=V.x+V.w/2, my=V.y+V.h/2;
+  V.h=V.w*wil;
+  V.x=mx-V.w/2; V.y=my-V.h/2;
+  clamp(); applyView();
+}
+/* Het beeldvenster strak om het land leggen, zodat er geen brede lege randen
+   overblijven op een smal scherm. */
+let omvang=null;
+function landVak(){
+  if(omvang) return omvang;
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  R.forEach(r=>{ if(r[11]<x0)x0=r[11]; if(r[11]>x1)x1=r[11];
+                 if(r[12]<y0)y0=r[12]; if(r[12]>y1)y1=r[12]; });
+  const o=D.ozn_hoofd;
+  x0=Math.min(x0,o[0]); x1=Math.max(x1,o[0]); y0=Math.min(y0,o[1]); y1=Math.max(y1,o[1]);
+  return omvang={x0,y0,x1,y1};
+}
+function pasIn(ms){
+  const bb=map.getBoundingClientRect(); if(!bb.width) return;
+  const v=landVak(), marge=1.06;
+  const bw=(v.x1-v.x0)*marge, bh=(v.y1-v.y0)*marge;
+  const verhouding=bb.height/bb.width;
+  let w=Math.max(bw, bh/verhouding);
+  w=Math.min(D.w,Math.max(D.w/16,w));
+  const h=w*verhouding;
+  naar({x:(v.x0+v.x1)/2-w/2, y:(v.y0+v.y1)/2-h/2, w, h}, ms);
+}
+const standaard=()=>Math.abs(V.w-V0.w)<1 && Math.abs(V.x-V0.x)<1 && Math.abs(V.y-V0.y)<1;
+
+vol.onclick=()=>{
+  const aan=!document.body.classList.contains('vol');
+  document.body.classList.toggle('vol',aan);
+  vol.setAttribute('aria-pressed',String(aan));
+  vol.lastElementChild.textContent = aan ? 'Sluiten' : 'Volledig scherm';
+  if(aan) vol.scrollIntoView({block:'start'});
+  const vanaf=standaard();
+  requestAnimationFrame(()=>{
+    pasVerhoudingAan(); paintDots();
+    if(vanaf) pasIn(aan?320:0);
+  });
+};
+addEventListener('keydown',e=>{
+  if(e.key==='Escape' && document.body.classList.contains('vol')) vol.click();
+});
+let maatTimer=null;
+addEventListener('resize',()=>{
+  clearTimeout(maatTimer);
+  maatTimer=setTimeout(()=>{ pasVerhoudingAan(); paintDots(); },150);
+});
 
 </script>
 <script>
