@@ -92,6 +92,8 @@ svg.map.drag{cursor:grabbing}
 .lgtxt b{font-size:13px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
 .lgtxt em{font-style:normal;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
 .lgtxt span{font-size:11.5px;color:var(--tx3);font-variant-numeric:tabular-nums}
+.lgtxt .st{grid-column:1/-1;font-size:11px;color:var(--tx3);opacity:.78;margin-top:1px;
+  font-variant-numeric:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lgkop{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:0 8px 7px;
   font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3)}
 .markt{margin-top:10px;padding:12px 8px 2px;border-top:1px solid var(--line2)}
@@ -266,7 +268,7 @@ table.zt td:last-child,table.zt th:last-child{text-align:right;font-variant-nume
           </div>
           <div class="gb">
             <div class="r"><span class="sw ln"></span><div><b>Landsgrens NL&ndash;DE</b><span>De lijn waar de overdracht plaatsvindt. Alle afstanden worden hiervandaan gemeten.</span></div></div>
-            <div class="r"><span class="sw ht"></span><div><b>Grensstrook 0&ndash;50 km</b><span>Het kerngebied: <i id="nstrook">&mdash;</i> ondernemingen, <i id="cstrook">&mdash;</i> crematies p.j. Geen zone &mdash; ligt binnen zone 1.</span></div></div>
+            <div class="r"><span class="sw ht"></span><div><b>Grensstrook 0&ndash;50 km</b><span>Het kerngebied: <i id="nstrook">&mdash;</i> ondernemingen, <i id="cstrook">&mdash;</i> crematies p.j. Aken, M&ouml;nchengladbach, Duisburg. Geen zone &mdash; ligt binnen zone 1.</span></div></div>
           </div>
         </div>
         <div class="zoombar">
@@ -590,12 +592,16 @@ const M={
  "jaar_bevolking": "Zensus 2022, geschaald naar 2025"
 };
 const MZ={}; M.zones.forEach(r=>MZ[r.zone]=r);
+const STEDEN={1:'D\u00fcsseldorf, Keulen, Dortmund', 2:'Bremen, Bielefeld, Paderborn',
+              3:'Hamburg, Frankfurt, Hannover',      4:'Stuttgart, Karlsruhe, Erfurt',
+              5:'Leipzig, Neurenberg, Rostock',      0:'Berlijn, M\u00fcnchen, Dresden'};
 legend.insertAdjacentHTML('beforeend','<div class="lgkop"><span>Zone</span><span>Crematies p.j.</span></div>');
 const rij=(z,titel,sub,waarde)=>{
   const b=document.createElement('button');
   b.className='lgbtn'; b.dataset.z=z; b.setAttribute('aria-pressed','true');
   b.innerHTML=`<span class="chip" style="background:${z?ZF(z):'var(--land)'}"><i style="background:${z?ZC(z):'var(--z0)'}"></i></span>`
-    +`<span class="lgtxt"><b>${titel}</b><em>${waarde}</em><span>${sub}</span></span>`;
+    +`<span class="lgtxt"><b>${titel}</b><em>${waarde}</em><span>${sub}</span>`
+    +`<span class="st">${STEDEN[z]}</span></span>`;
   b.onclick=()=>{const on=b.getAttribute('aria-pressed')==='true';
     b.setAttribute('aria-pressed',!on); hidden[z]=on; paintDots(); draw(); paneel();};
   if(z) { b.onmouseenter=()=>paneel(z); b.onmouseleave=()=>paneel(); }
