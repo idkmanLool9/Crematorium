@@ -421,7 +421,7 @@ function tekenSteden(k){
   }
 }
 
-function paintDots(){
+function paintDots(licht){
   const bb=map.getBoundingClientRect();
   const k=bb.width ? V.w/bb.width : V.w/D.w;   // beeldeenheden per schermpixel
   kz=Math.min(2.4,Math.pow(D.w/V.w,0.38));
@@ -441,7 +441,7 @@ function paintDots(){
     c.setAttribute('stroke-width',(z>=4?0.7:0.4)*k*kz);
     fr[z].appendChild(c);
   });
-  [5,4,3,0,2,1].forEach(z=>gz[z].appendChild(fr[z]));
+  if(!licht) [5,4,3,0,2,1].forEach(z=>gz[z].appendChild(fr[z]));
   if(vast>=0&&hidden[R[vast][13]]) {vast=-1; tip.style.opacity=0}
   if(hov>=0&&!hidden[R[hov][13]]) markeer(hov); else if(vast>=0) markeer(vast); else {hov=-1; hiG.textContent=''}
   if(hov<0&&vast>=0) toon(vast);
@@ -463,13 +463,58 @@ function paintDots(){
 }
 function applyView(){ map.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${V.h}`); paintDots(); }
 function clamp(){ V.x=Math.max(-V.w*.2,Math.min(D.w-V.w*.8,V.x)); V.y=Math.max(-V.h*.2,Math.min(D.h-V.h*.8,V.y)); }
-function zoomAt(f,cx,cy){
-  const nw=Math.min(D.w,Math.max(D.w/16,V.w*f)); if(nw===V.w) return;
-  const nh=nw*(V.h/V.w);
-  V.x=cx-(cx-V.x)*(nw/V.w); V.y=cy-(cy-V.y)*(nh/V.h); V.w=nw; V.h=nh; clamp(); applyView();
+/* Zacht bewegen: alles wat de kaart verplaatst loopt via een animatie met
+   uitloop, zodat er nooit een sprong in beeld komt. */
+const zacht = t => 1-Math.pow(1-t, 3);
+let loop=null;
+function stopLoop(){ if(loop){ cancelAnimationFrame(loop); loop=null } }
+
+function naar(doel, ms){
+  stopLoop();
+  const van={...V}, t0=performance.now();
+  if(!ms){ V={...doel}; clamp(); applyView(); return }
+  const stap=nu=>{
+    const t=Math.min(1,(nu-t0)/ms), e=zacht(t);
+    V.x=van.x+(doel.x-van.x)*e; V.y=van.y+(doel.y-van.y)*e;
+    V.w=van.w+(doel.w-van.w)*e; V.h=van.h+(doel.h-van.h)*e;
+    map.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${V.h}`);
+    paintDots(true);
+    if(t<1){ loop=requestAnimationFrame(stap) } else { loop=null; clamp(); applyView() }
+  };
+  loop=requestAnimationFrame(stap);
 }
-map.addEventListener('wheel',e=>{e.preventDefault();const b=map.getBoundingClientRect();
-  zoomAt(e.deltaY>0?1.16:1/1.16, V.x+(e.clientX-b.left)/b.width*V.w, V.y+(e.clientY-b.top)/b.height*V.h);},{passive:false});
+
+function zoomDoel(f,cx,cy){
+  const nw=Math.min(D.w,Math.max(D.w/16,V.w*f));
+  const nh=nw*(V.h/V.w);
+  const d={x:cx-(cx-V.x)*(nw/V.w), y:cy-(cy-V.y)*(nh/V.h), w:nw, h:nh};
+  const bx=d.w, by=d.h;
+  d.x=Math.max(-bx*.2,Math.min(D.w-bx*.8,d.x));
+  d.y=Math.max(-by*.2,Math.min(D.h-by*.8,d.y));
+  return d;
+}
+function zoomAt(f,cx,cy,ms){
+  const nw=Math.min(D.w,Math.max(D.w/16,V.w*f)); if(nw===V.w) return;
+  naar(zoomDoel(f,cx,cy), ms===undefined?260:ms);
+}
+
+/* Scrollen zoomt vloeiend: snelle tikken tellen op in plaats van elkaar af te breken. */
+let wielDoel=null, wielTimer=null;
+map.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const b=map.getBoundingClientRect();
+  const basis=wielDoel||V;
+  const f=Math.pow(e.deltaY>0?1.14:1/1.14, Math.min(3,Math.abs(e.deltaY)/50)||1);
+  const nw=Math.min(D.w,Math.max(D.w/16,basis.w*f));
+  const nh=nw*(basis.h/basis.w);
+  const cx=basis.x+(e.clientX-b.left)/b.width*basis.w;
+  const cy=basis.y+(e.clientY-b.top)/b.height*basis.h;
+  wielDoel={x:cx-(cx-basis.x)*(nw/basis.w), y:cy-(cy-basis.y)*(nh/basis.h), w:nw, h:nh};
+  wielDoel.x=Math.max(-nw*.2,Math.min(D.w-nw*.8,wielDoel.x));
+  wielDoel.y=Math.max(-nh*.2,Math.min(D.h-nh*.8,wielDoel.y));
+  naar(wielDoel, 180);
+  clearTimeout(wielTimer); wielTimer=setTimeout(()=>{wielDoel=null}, 220);
+},{passive:false});
 let drag=null, knijp=null, geknepen=false;
 const ptrs=new Map();
 const mid=()=>{const p=[...ptrs.values()];
@@ -479,9 +524,30 @@ function startKnijp(){
   const b=map.getBoundingClientRect(), m=mid();
   knijp={d0:Math.max(m.d,1), w0:V.w, h0:V.h,
          ax:V.x+(m.x-b.left)/b.width*V.w, ay:V.y+(m.y-b.top)/b.height*V.h};
-  drag=null; map.classList.add('drag'); hov=-1; geknepen=true;
+  stopLoop(); wielDoel=null; drag=null; map.classList.add('drag'); hov=-1; geknepen=true;
 }
-function startSleep(e){ drag={x:e.clientX,y:e.clientY,vx:V.x,vy:V.y,m:0}; map.classList.add('drag') }
+function startSleep(e){
+  stopLoop(); wielDoel=null;
+  drag={x:e.clientX,y:e.clientY,vx:V.x,vy:V.y,m:0,px:e.clientX,py:e.clientY,t:performance.now(),sx:0,sy:0};
+  map.classList.add('drag');
+}
+/* Na het loslaten rolt de kaart uit, zoals een kaart hoort te doen. */
+function uitrollen(sx,sy){
+  if(Math.hypot(sx,sy)<0.25) return;
+  let vx=sx, vy=sy, vorig=performance.now();
+  stopLoop();
+  const stap=nu=>{
+    const dt=Math.min(32,nu-vorig); vorig=nu;
+    const demping=Math.pow(0.0022, dt/1000);
+    vx*=demping; vy*=demping;
+    V.x-=vx*dt; V.y-=vy*dt; clamp();
+    map.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${V.h}`);
+    tekenSteden(k0());
+    if(vast>=0) toon(vast);
+    if(Math.hypot(vx,vy)>0.02){ loop=requestAnimationFrame(stap) } else { loop=null; applyView() }
+  };
+  loop=requestAnimationFrame(stap);
+}
 map.addEventListener('pointerdown',e=>{
   try{map.setPointerCapture(e.pointerId)}catch(_){}
   ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
@@ -501,6 +567,12 @@ map.addEventListener('pointermove',e=>{
   if(!drag) return;
   const dx=(e.clientX-drag.x)/b.width*V.w, dy=(e.clientY-drag.y)/b.height*V.h;
   drag.m=Math.max(drag.m,Math.abs(dx)+Math.abs(dy));
+  const nu=performance.now(), dt=nu-drag.t;
+  if(dt>6){
+    drag.sx=((e.clientX-drag.px)/b.width*V.w)/dt;
+    drag.sy=((e.clientY-drag.py)/b.height*V.h)/dt;
+    drag.px=e.clientX; drag.py=e.clientY; drag.t=nu;
+  }
   V.x=drag.vx-dx; V.y=drag.vy-dy; clamp(); map.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${V.h}`);
   tekenSteden(k0());
   if(vast>=0) toon(vast);
@@ -510,15 +582,17 @@ const end=e=>{
   if(ptrs.size<2) knijp=null;
   if(ptrs.size===1){ const p=[...ptrs.values()][0]; startSleep({clientX:p.x,clientY:p.y}); return }
   if(ptrs.size===0){ map.classList.remove('drag');
+    const d=drag;
     if(geknepen){ geknepen=false; setTimeout(paintDots,0) }
+    else if(d && d.m>4 && performance.now()-d.t<120) uitrollen(d.sx,d.sy);
     setTimeout(()=>drag=null,0) }
 };
 map.addEventListener('pointerup',end); map.addEventListener('pointercancel',end);
 map.addEventListener('dblclick',e=>{const b=map.getBoundingClientRect();
-  zoomAt(1/2, V.x+(e.clientX-b.left)/b.width*V.w, V.y+(e.clientY-b.top)/b.height*V.h)});
-zin.onclick=()=>zoomAt(1/1.5,V.x+V.w/2,V.y+V.h/2);
-zout.onclick=()=>zoomAt(1.5,V.x+V.w/2,V.y+V.h/2);
-zreset.onclick=()=>{V={...V0};applyView()};
+  zoomAt(1/2, V.x+(e.clientX-b.left)/b.width*V.w, V.y+(e.clientY-b.top)/b.height*V.h, 320)});
+zin.onclick=()=>zoomAt(1/1.6,V.x+V.w/2,V.y+V.h/2,300);
+zout.onclick=()=>zoomAt(1.6,V.x+V.w/2,V.y+V.h/2,300);
+zreset.onclick=()=>naar({...V0},420);
 
 const mapbox=document.querySelector('.mapbox');
 function dichtstbij(e){
