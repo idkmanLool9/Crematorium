@@ -387,7 +387,7 @@ function tekenSteden(k){
   const pad=V.w*0.02;
   const x0=V.x-pad, x1=V.x+V.w+pad, y0=V.y-pad, y1=V.y+V.h+pad;
   const diep=D.w/V.w;
-  const fs=12.5*k, hoog=fs*2.1;
+  const fs=13*k, hoog=fs*2.1;
   const MAX=Math.min(95, Math.round(17*Math.pow(diep,0.58)));
   const vak=[];
   let gezet=0;
@@ -410,7 +410,8 @@ function tekenSteden(k){
   }
 }
 function paintDots(){
-  const k=V.w/D.w;
+  const bb=map.getBoundingClientRect();
+  const k=bb.width ? V.w/bb.width : V.w/D.w;   // beeldeenheden per schermpixel
   kz=Math.min(2.4,Math.pow(D.w/V.w,0.38));
   pat.setAttribute('width',6*k); pat.setAttribute('height',6*k);
   patLn.setAttribute('y2',6*k); patLn.setAttribute('stroke-width',1.1*k);
@@ -519,7 +520,7 @@ function markeer(i){
   hiG.textContent='';
   const r=R[i], rr=dotR[i]||3;
   mk('circle',{cx:r[11],cy:r[12],r:rr*3.4,fill:ZC(r[13]||0),'fill-opacity':.14},hiG);
-  mk('circle',{cx:r[11],cy:r[12],r:rr*2,fill:'none',stroke:'var(--tx)','stroke-width':2*(V.w/D.w),opacity:.8},hiG);
+  mk('circle',{cx:r[11],cy:r[12],r:rr*2,fill:'none',stroke:'var(--tx)','stroke-width':2*(map.getBoundingClientRect().width ? V.w/map.getBoundingClientRect().width : V.w/D.w),opacity:.8},hiG);
 }
 function toon(i){
   const r=R[i], w=[r[3],r[4]].filter(Boolean)[0]||'';
