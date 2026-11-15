@@ -70,6 +70,12 @@ section{padding:50px 0 0}
 .maprow{display:grid;grid-template-columns:1fr 276px}
 @media(max-width:900px){.maprow{grid-template-columns:1fr}}
 .mapbox{position:relative;background:var(--sea);overflow:hidden}
+#namen{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+#namen b{position:absolute;font-size:13px;font-weight:600;letter-spacing:-.01em;line-height:1;
+  color:var(--tx);white-space:nowrap;transform:translate(-50%,-100%);
+  text-shadow:0 0 3px var(--kaartvel),0 0 3px var(--kaartvel),0 0 3px var(--kaartvel),
+              0 0 6px var(--kaartvel),0 1px 2px var(--kaartvel)}
+#namen b.ozn{transform:translate(-100%,-50%)}
 svg.map{display:block;width:100%;height:auto;cursor:grab;touch-action:none}
 svg.map.aan{cursor:pointer}
 svg.map.drag{cursor:grabbing}
@@ -256,6 +262,7 @@ table.zt td:last-child,table.zt th:last-child{text-align:right;font-variant-nume
     <div class="maprow">
       <div class="mapbox">
         <svg class="map" id="map" aria-label="Kaart van Duitsland met uitvaartondernemingen in vijf afstandszones"></svg>
+        <div id="namen"></div>
         <div id="tip"></div>
         <div id="detail"></div>
       </div>
@@ -378,41 +385,42 @@ const oznG=mk('g',{});
 const hiG=mk('g',{'pointer-events':'none'});
 
 let dotR=[], hov=-1, vast=-1, kz=1;
+const k0=()=>{const b=map.getBoundingClientRect(); return b.width?V.w/b.width:V.w/D.w};
 
 /* Stadsnamen: grootste eerst, alleen wat in beeld is, en nooit over elkaar heen.
    Hoe verder je inzoomt, hoe minder steden om de ruimte strijden, dus hoe meer
    er vanzelf bij komen. */
 function tekenSteden(k){
   const S=D.steden; if(!S) return;
-  const pad=V.w*0.02;
-  const x0=V.x-pad, x1=V.x+V.w+pad, y0=V.y-pad, y1=V.y+V.h+pad;
+  const bb=map.getBoundingClientRect();
+  namen.textContent='';
+  stadG.textContent='';
+  if(!bb.width) return;
+  const fx=bb.width/V.w, fy=bb.height/V.h;        // schermpixels per beeldeenheid
   const diep=D.w/V.w;
-  const fs=13*k, hoog=fs*2.1;
   const MAX=Math.min(95, Math.round(17*Math.pow(diep,0.58)));
-  const vak=[];
+  const hoog=26, vak=[];
   let gezet=0;
   for(let i=0;i<S.length && gezet<MAX;i++){
     const [naam,x,y]=S[i];
-    if(x<x0||x>x1||y<y0||y>y1) continue;
-    const br=naam.length*fs*0.56, l=x-br/2, r=x+br/2, t=y-hoog, b=y+fs*0.4;
+    const sx=(x-V.x)*fx, sy=(y-V.y)*fy;
+    const br=naam.length*7.4+8, l=sx-br/2, r=sx+br/2, t=sy-hoog, b2=sy+4;
+    if(l<2||r>bb.width-2||t<2||b2>bb.height-2) continue;   // halve namen aan de rand niet tonen
     let bots=false;
     for(let v=0;v<vak.length;v++){
       const q=vak[v];
-      if(l<q[2]&&r>q[0]&&t<q[3]&&b>q[1]){ bots=true; break }
+      if(l<q[2]&&r>q[0]&&t<q[3]&&b2>q[1]){ bots=true; break }
     }
     if(bots) continue;
-    vak.push([l,t,r,b]); gezet++;
+    vak.push([l,t,r,b2]); gezet++;
     mk('circle',{cx:x,cy:y,r:2.4*k,fill:'var(--tx)','fill-opacity':.55},stadG);
-    const ty=y-6.5*k;
-    const halo=mk('text',{x:x,y:ty,'text-anchor':'middle','font-size':fs,'font-weight':600,
-      fill:'none','font-family':'inherit',stroke:'var(--kaartvel)','stroke-width':3.2*k,
-      'stroke-linejoin':'round','stroke-opacity':.9},stadG);
-    halo.textContent=naam;
-    const el=mk('text',{x:x,y:ty,'text-anchor':'middle','font-size':fs,'font-weight':600,
-      fill:'var(--tx)','font-family':'inherit'},stadG);
+    const el=document.createElement('b');
     el.textContent=naam;
+    el.style.left=sx+'px'; el.style.top=(sy-6)+'px';
+    namen.appendChild(el);
   }
 }
+
 function paintDots(){
   const bb=map.getBoundingClientRect();
   const k=bb.width ? V.w/bb.width : V.w/D.w;   // beeldeenheden per schermpixel
@@ -444,14 +452,14 @@ function paintDots(){
   const [ox,oy]=D.ozn_hoofd;
   mk('circle',{cx:ox,cy:oy,r:9*k,fill:'var(--z1)','fill-opacity':.16},oznG);
   mk('circle',{cx:ox,cy:oy,r:4*k,fill:'var(--z1)',stroke:'var(--sea)','stroke-width':1.4*k},oznG);
-  const tx=ox-11*k, ty2=oy-10*k;
-  const th=mk('text',{x:tx,y:ty2,'text-anchor':'end','font-size':13.5*k,'font-weight':600,
-    fill:'none','font-family':'inherit',stroke:'var(--kaartvel)','stroke-width':3.4*k,
-    'stroke-linejoin':'round','stroke-opacity':.9},oznG);
-  th.textContent='OZN Oldenzaal';
-  const t=mk('text',{x:tx,y:ty2,'text-anchor':'end','font-size':13.5*k,'font-weight':600,
-    fill:'var(--tx)','font-family':'inherit'},oznG);
-  t.textContent='OZN Oldenzaal';
+  const bb2=map.getBoundingClientRect();
+  if(bb2.width){
+    const el=document.createElement('b');
+    el.className='ozn'; el.textContent='OZN Oldenzaal';
+    el.style.left=((ox-V.x)*(bb2.width/V.w)-12)+'px';
+    el.style.top=((oy-V.y)*(bb2.height/V.h))+'px';
+    namen.appendChild(el);
+  }
 }
 function applyView(){ map.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${V.h}`); paintDots(); }
 function clamp(){ V.x=Math.max(-V.w*.2,Math.min(D.w-V.w*.8,V.x)); V.y=Math.max(-V.h*.2,Math.min(D.h-V.h*.8,V.y)); }
@@ -494,6 +502,7 @@ map.addEventListener('pointermove',e=>{
   const dx=(e.clientX-drag.x)/b.width*V.w, dy=(e.clientY-drag.y)/b.height*V.h;
   drag.m=Math.max(drag.m,Math.abs(dx)+Math.abs(dy));
   V.x=drag.vx-dx; V.y=drag.vy-dy; clamp(); map.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${V.h}`);
+  tekenSteden(k0());
   if(vast>=0) toon(vast);
 });
 const end=e=>{
