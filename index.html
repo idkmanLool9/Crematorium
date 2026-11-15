@@ -77,6 +77,9 @@ section{padding:50px 0 0}
               0 0 6px var(--kaartvel),0 1px 2px var(--kaartvel)}
 #namen b.ozn{transform:translate(-100%,-50%)}
 svg.map{display:block;width:100%;height:auto;cursor:grab;touch-action:none}
+/* Straal en lijndikte van de stippen komen uit een variabele op de zonegroep,
+   zodat zoomen ze niet stuk voor stuk hoeft bij te werken. */
+#map .pt{r:calc(var(--pr,3) * 1px);stroke-width:calc(var(--ps,.4) * 1px)}
 svg.map.aan{cursor:pointer}
 svg.map.drag{cursor:grabbing}
 .side{border-left:1px solid var(--line2);display:flex;flex-direction:column}
@@ -384,7 +387,7 @@ const stadG=mk('g',{'pointer-events':'none'});
 const oznG=mk('g',{});
 const hiG=mk('g',{'pointer-events':'none'});
 
-let dotR=[], hov=-1, vast=-1, kz=1;
+let hov=-1, vast=-1, kz=1;
 const k0=()=>{const b=map.getBoundingClientRect(); return b.width?V.w/b.width:V.w/D.w};
 
 /* Stadsnamen: grootste eerst, alleen wat in beeld is, en nooit over elkaar heen.
@@ -421,27 +424,39 @@ function tekenSteden(k){
   }
 }
 
+let rz=[3,3,3,3,3,3];
 function paintDots(licht){
   const bb=map.getBoundingClientRect();
   const k=bb.width ? V.w/bb.width : V.w/D.w;   // beeldeenheden per schermpixel
   kz=Math.min(2.4,Math.pow(D.w/V.w,0.38));
   pat.setAttribute('width',6*k); pat.setAttribute('height',6*k);
   patLn.setAttribute('y2',6*k); patLn.setAttribute('stroke-width',1.1*k);
-  gz.forEach(g=>g.textContent='');
-  const fr=gz.map(()=>document.createDocumentFragment());
-  R.forEach((r,i)=>{
-    const z=r[13];
-    if(hidden[z]) return;
-    const c=dots[i];
-    const rr=(z===0?2.2:z===1?3.2:2.8)*k*kz; dotR[i]=rr;
-    c.setAttribute('r',rr);
-    c.setAttribute('fill',z===0?'var(--z0)':ZC(z));
-    c.setAttribute('fill-opacity',z===0?.45:.92);
-    c.setAttribute('stroke','var(--ring)');
-    c.setAttribute('stroke-width',(z>=4?0.7:0.4)*k*kz);
-    fr[z].appendChild(c);
-  });
-  if(!licht) [5,4,3,0,2,1].forEach(z=>gz[z].appendChild(fr[z]));
+
+  // Maten gaan via stijlvariabelen op de zonegroep: zes waarden zetten in
+  // plaats van 3788 elementen aanraken. Dat is wat zoomen vloeiend houdt.
+  for(let z=0;z<=5;z++){
+    rz[z]=(z===0?2.2:z===1?3.2:2.8)*k*kz;
+    gz[z].style.setProperty('--pr', rz[z]);
+    gz[z].style.setProperty('--ps', (z>=4?0.7:0.4)*k*kz);
+  }
+
+  if(!licht){
+    gz.forEach(g=>g.textContent='');
+    const fr=gz.map(()=>document.createDocumentFragment());
+    R.forEach((r,i)=>{
+      const z=r[13];
+      if(hidden[z]) return;
+      const c=dots[i];
+      c.setAttribute('r',rz[z]);
+      c.setAttribute('fill',z===0?'var(--z0)':ZC(z));
+      c.setAttribute('fill-opacity',z===0?.45:.92);
+      c.setAttribute('stroke','var(--ring)');
+      c.setAttribute('stroke-width',(z>=4?0.7:0.4)*k*kz);
+      fr[z].appendChild(c);
+    });
+    [5,4,3,0,2,1].forEach(z=>gz[z].appendChild(fr[z]));
+  }
+
   if(vast>=0&&hidden[R[vast][13]]) {vast=-1; tip.style.opacity=0}
   if(hov>=0&&!hidden[R[hov][13]]) markeer(hov); else if(vast>=0) markeer(vast); else {hov=-1; hiG.textContent=''}
   if(hov<0&&vast>=0) toon(vast);
@@ -562,7 +577,7 @@ map.addEventListener('pointermove',e=>{
     const h=w*(knijp.h0/knijp.w0);
     V.w=w; V.h=h;
     V.x=knijp.ax-(m.x-b.left)/b.width*w; V.y=knijp.ay-(m.y-b.top)/b.height*h;
-    clamp(); applyView(); return;
+    clamp(); map.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${V.h}`); paintDots(true); return;
   }
   if(!drag) return;
   const dx=(e.clientX-drag.x)/b.width*V.w, dy=(e.clientY-drag.y)/b.height*V.h;
@@ -609,7 +624,7 @@ function dichtstbij(e){
 }
 function markeer(i){
   hiG.textContent='';
-  const r=R[i], rr=dotR[i]||3;
+  const r=R[i], rr=rz[r[13]]||3;
   mk('circle',{cx:r[11],cy:r[12],r:rr*3.4,fill:ZC(r[13]||0),'fill-opacity':.14},hiG);
   mk('circle',{cx:r[11],cy:r[12],r:rr*2,fill:'none',stroke:'var(--tx)','stroke-width':2*(map.getBoundingClientRect().width ? V.w/map.getBoundingClientRect().width : V.w/D.w),opacity:.8},hiG);
 }
@@ -620,7 +635,7 @@ function toon(i){
     +km(r[10])+' km hemelsbreed vanaf OZN</small>';
   const b=map.getBoundingClientRect(), mb=mapbox.getBoundingClientRect();
   const sx=b.left+(r[11]-V.x)/V.w*b.width, sy=b.top+(r[12]-V.y)/V.h*b.height;
-  const rpx=(dotR[i]||3)/V.w*b.width;
+  const rpx=(rz[r[13]]||3)/V.w*b.width;
   tip.style.left=(sx-mb.left)+'px'; tip.style.top=(sy-rpx-mb.top)+'px'; tip.style.opacity=1;
 }
 function wis(){ hov=-1; map.classList.remove('aan');
