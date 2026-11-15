@@ -403,9 +403,13 @@ function tekenSteden(k){
     if(bots) continue;
     vak.push([l,t,r,b]); gezet++;
     mk('circle',{cx:x,cy:y,r:2.4*k,fill:'var(--tx)','fill-opacity':.55},stadG);
-    const el=mk('text',{x:x,y:y-6.5*k,'text-anchor':'middle','font-size':fs,'font-weight':600,
-      fill:'var(--tx)','font-family':'inherit',stroke:'var(--kaartvel)','stroke-width':4.4*k,
-      'paint-order':'stroke','stroke-linejoin':'round','stroke-opacity':.92},stadG);
+    const ty=y-6.5*k;
+    const halo=mk('text',{x:x,y:ty,'text-anchor':'middle','font-size':fs,'font-weight':600,
+      fill:'none','font-family':'inherit',stroke:'var(--kaartvel)','stroke-width':3.2*k,
+      'stroke-linejoin':'round','stroke-opacity':.9},stadG);
+    halo.textContent=naam;
+    const el=mk('text',{x:x,y:ty,'text-anchor':'middle','font-size':fs,'font-weight':600,
+      fill:'var(--tx)','font-family':'inherit'},stadG);
     el.textContent=naam;
   }
 }
@@ -440,9 +444,13 @@ function paintDots(){
   const [ox,oy]=D.ozn_hoofd;
   mk('circle',{cx:ox,cy:oy,r:9*k,fill:'var(--z1)','fill-opacity':.16},oznG);
   mk('circle',{cx:ox,cy:oy,r:4*k,fill:'var(--z1)',stroke:'var(--sea)','stroke-width':1.4*k},oznG);
-  const t=mk('text',{x:ox-11*k,y:oy-10*k,'text-anchor':'end','font-size':13*k,'font-weight':600,
-    fill:'var(--tx)','font-family':'inherit',stroke:'var(--sea)','stroke-width':3.6*k,
-    'paint-order':'stroke','stroke-linejoin':'round'},oznG);
+  const tx=ox-11*k, ty2=oy-10*k;
+  const th=mk('text',{x:tx,y:ty2,'text-anchor':'end','font-size':13.5*k,'font-weight':600,
+    fill:'none','font-family':'inherit',stroke:'var(--kaartvel)','stroke-width':3.4*k,
+    'stroke-linejoin':'round','stroke-opacity':.9},oznG);
+  th.textContent='OZN Oldenzaal';
+  const t=mk('text',{x:tx,y:ty2,'text-anchor':'end','font-size':13.5*k,'font-weight':600,
+    fill:'var(--tx)','font-family':'inherit'},oznG);
   t.textContent='OZN Oldenzaal';
 }
 function applyView(){ map.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${V.h}`); paintDots(); }
