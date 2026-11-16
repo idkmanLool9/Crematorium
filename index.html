@@ -778,6 +778,7 @@ legend.insertAdjacentHTML('beforeend',
   +'<dl><dt>Inwoners</dt><dd id="m1"></dd>'
   +'<dt>Overledenen p.j.</dt><dd id="m2"></dd>'
   +'<dt>Crematies p.j.</dt><dd id="m3"></dd>'
+  +'<dt>Uitvaartondernemingen</dt><dd id="m5"></dd>'
   +'<dt>Per onderneming</dt><dd class="dim" id="m4"></dd></dl></div>'
   +'<p class="sidehint">Klik een zone om hem te tonen of te verbergen &mdash; de marktomvang telt mee wat zichtbaar is. Zweef over een zone voor die zone alleen. Sleep om te verschuiven, knijp of scroll om te zoomen. Tik op de kaart: de dichtstbijzijnde onderneming licht op.</p>');
 
@@ -795,6 +796,7 @@ function paneel(alleen){
   }
   mwie.textContent=wie;
   m1.textContent=nf(r.inwoners); m2.textContent=nf(r.overledenen); m3.textContent=nf(r.crematies);
+  m5.textContent=nf(r.bedrijven);
   m4.textContent=r.bedrijven? nf(Math.round(r.crematies/r.bedrijven))+' crematies' : '—';
 }
 paneel();
